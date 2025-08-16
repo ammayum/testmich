@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat with AI</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-50 p-6">
+  <h1 class="text-2xl font-bold mb-4">Chat with AI</h1>
+
+  <div id="chat-box" class="border p-4 h-64 overflow-y-auto mb-4 bg-white rounded-lg"></div>
+  <input id="user-input" type="text" placeholder="Type a message..." class="border p-2 w-full rounded mb-2">
+  <button id="send-btn" class="px-4 py-2 bg-blue-600 text-white rounded">Send</button>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const input = document.getElementById('user-input');
+    const button = document.getElementById('send-btn');
+
+    button.addEventListener('click', async () => {
+      const message = input.value.trim();
+      if (!message) return;
+      chatBox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+      input.value = '';
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        chatBox.innerHTML += data.reply
+          ? `<p><strong>AI:</strong> ${data.reply}</p>`
+          : `<p class="text-red-600">Error: ${data.error}</p>`;
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (err) {
+        chatBox.innerHTML += `<p class="text-red-600">Error: Network issue</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

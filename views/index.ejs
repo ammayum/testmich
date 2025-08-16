@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>St. Michael Ethiopian Orthodox Tewahedo Church</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- HEADER -->
+  <%- include('partials/header') %>
+
+  <!-- HERO SECTION -->
+  <section class="relative h-[70vh] flex items-center justify-center bg-cover bg-center" style="background-image:url('/images/church-bg.jpg');">
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div class="relative z-10 text-center text-white px-4">
+      <h1 class="text-3xl md:text-5xl font-bold mb-4">St. Michael Ethiopian Orthodox Tewahedo Church</h1>
+      <p class="mb-6">Welcome to our parish community</p>
+      <a href="/our-church" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg shadow-md">Learn More</a>
+    </div>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section class="py-12 bg-gray-100">
+    <div class="container mx-auto text-center mb-8">
+      <h2 class="text-3xl font-bold">Our Services</h2>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6 container mx-auto px-6">
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <img src="/images/baptism.jpg" class="w-full h-40 object-cover rounded-lg mb-4">
+        <h3 class="font-semibold mb-2">Baptism</h3>
+        <p>Holy sacrament of rebirth in Christ.</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <img src="/images/communion.jpg" class="w-full h-40 object-cover rounded-lg mb-4">
+        <h3 class="font-semibold mb-2">Holy Communion</h3>
+        <p>Receiving the true Body and Blood of Christ.</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <img src="/images/matrimony.jpg" class="w-full h-40 object-cover rounded-lg mb-4">
+        <h3 class="font-semibold mb-2">Matrimony</h3>
+        <p>Holy union and blessing of Christian marriage.</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <img src="/images/wake.jpg" class="w-full h-40 object-cover rounded-lg mb-4">
+        <h3 class="font-semibold mb-2">Wake Service</h3>
+        <p>Prayer and remembrance for the departed faithful.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONATION SECTION -->
+  <section class="py-12 container mx-auto text-center px-6">
+    <h2 class="text-3xl font-bold mb-4">Support The Church</h2>
+    <p class="mb-6">Help us grow and serve the community. Your generosity sustains our parish life.</p>
+    <a href="/donations" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-md">Donate Now</a>
+  </section>
+
+  <!-- LIVE STREAM SECTION -->
+  <section class="py-12 bg-gray-100">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-6">Live Stream</h2>
+      <div class="aspect-w-16 aspect-h-9">
+        <iframe class="w-full h-96 md:h-[500px]" src="https://www.youtube.com/embed/YOUR_LIVE_STREAM_ID" title="Live Stream" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <%- include('partials/footer') %>
+
+</body>
+</html>

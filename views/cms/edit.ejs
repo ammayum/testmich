@@ -1,0 +1,9 @@
+<h2>Edit <%= section.section %></h2>
+<form method="POST">
+  <% for (let key in section.content) { %>
+    <label><%= key %></label>
+    <input type="text" name="<%= key %>" value="<%= section.content[key] %>">
+    <br>
+  <% } %>
+  <button type="submit">Save</button>
+</form>

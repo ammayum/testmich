@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CMS Dashboard</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-50 p-6 min-h-screen">
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">CMS Dashboard</h1>
+    <a href="/admin/logout" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Logout</a>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <!-- Hero Section -->
+    <div class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-bold mb-4">Hero Section</h2>
+      <form action="/cms/edit/hero" method="POST" enctype="multipart/form-data">
+        <label class="block mb-2 font-semibold">Title</label>
+        <input type="text" name="title" value="<%= hero?.title %>" class="w-full p-2 mb-4 border rounded" required>
+
+        <label class="block mb-2 font-semibold">Subtitle</label>
+        <input type="text" name="subtitle" value="<%= hero?.subtitle %>" class="w-full p-2 mb-4 border rounded">
+
+        <label class="block mb-2 font-semibold">Background Image</label>
+        <input type="file" name="image" class="mb-4">
+        <% if (hero?.image) { %>
+          <img src="<%= hero.image %>" class="w-full h-40 object-cover rounded mb-4">
+        <% } %>
+
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Update Hero</button>
+      </form>
+    </div>
+
+    <!-- Donation Section -->
+    <div class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-bold mb-4">Donation Section</h2>
+      <form action="/cms/edit/donation" method="POST">
+        <label class="block mb-2 font-semibold">Text</label>
+        <input type="text" name="text" value="<%= donation?.text %>" class="w-full p-2 mb-4 border rounded">
+
+        <label class="block mb-2 font-semibold">Button Link</label>
+        <input type="text" name="link" value="<%= donation?.link %>" class="w-full p-2 mb-4 border rounded">
+
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Update Donation</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6 mt-6">
+    <!-- Services Section -->
+    <% services.forEach((service, index) => { %>
+      <div class="bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-bold mb-4"><%= service.name %></h2>
+        <form action="/cms/edit/service/<%= index %>" method="POST" enctype="multipart/form-data">
+          <label class="block mb-2 font-semibold">Title</label>
+          <input type="text" name="title" value="<%= service.title %>" class="w-full p-2 mb-4 border rounded">
+
+          <label class="block mb-2 font-semibold">Description</label>
+          <textarea name="description" class="w-full p-2 mb-4 border rounded"><%= service.description %></textarea>
+
+          <label class="block mb-2 font-semibold">Image</label>
+          <input type="file" name="image" class="mb-4">
+          <% if (service.image) { %>
+            <img src="<%= service.image %>" class="w-full h-32 object-cover rounded mb-4">
+          <% } %>
+
+          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Update Service</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- Live Stream Section -->
+  <div class="bg-white p-6 rounded shadow mt-6">
+    <h2 class="text-xl font-bold mb-4">Live Stream</h2>
+    <form action="/cms/edit/live-stream" method="POST">
+      <label class="block mb-2 font-semibold">YouTube Embed URL</label>
+      <input type="text" name="url" value="<%= liveStream?.url %>" class="w-full p-2 mb-4 border rounded">
+
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Update Live Stream</button>
+    </form>
+  </div>
+
+</body>
+</html>

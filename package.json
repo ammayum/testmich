@@ -8,6 +8,7 @@
     "watch:css": "tailwindcss -i ./src/input.css -o ./public/output.css --watch"
   },
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "bcrypt": "^6.0.0",
     "body-parser": "^1.20.3",
     "connect-mongo": "^5.1.0",

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate / Pay</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=GBP"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-100 font-sans">
+ <!-- HEADER -->
+  <%- include('partials/header') %>
+  <div class="max-w-5xl mx-auto px-4 py-16 text-center">
+    <h1 class="text-3xl font-bold text-gray-800 mb-12">Support Us / Make a Payment</h1>
+
+    <div class="flex flex-wrap justify-center gap-8">
+
+      <!-- PayPal / Card Payment -->
+      <div class="bg-white rounded-xl shadow-lg p-8 w-full md:w-96 flex flex-col items-center">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Pay via PayPal or Card</h2>
+        <div id="paypal-button-container" class="w-full"></div>
+      </div>
+
+      <!-- Bank QR Code -->
+      <div class="bg-white rounded-xl shadow-lg p-8 w-full md:w-96 flex flex-col items-center">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Pay via Bank Transfer</h2>
+        <p class="text-gray-600 mb-4">Scan this QR code with your banking app:</p>
+        <div id="qrcode" class="mb-4"></div>
+        <div class="text-gray-700 text-sm space-y-1">
+          <p><strong>Bank:</strong> Barclays Bank</p>
+          <p><strong>Account Name:</strong> Ammayu Miresa</p>
+          <p><strong>IBAN:</strong> GB12BARC20201512345678</p>
+          <p><strong>Sort Code:</strong> 20-20-15</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Generate Bank QR Code
+    var bankDetails = `
+Bank: Barclays Bank
+Account Name: Ammayu Miresa
+IBAN: GB12BARC20201512345678
+Sort Code: 20-20-15
+`;
+    new QRCode(document.getElementById("qrcode"), {
+        text: bankDetails,
+        width: 200,
+        height: 200,
+    });
+
+    // PayPal Button
+    paypal.Buttons({
+        style: {
+            layout: 'vertical',
+            color:  'blue',
+            shape:  'rect',
+            label:  'pay'
+        },
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: { value: '10.00' } // Replace with your amount
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                alert('Transaction completed by ' + details.payer.name.given_name);
+            });
+        }
+    }).render('#paypal-button-container');
+  </script>
+    <%- include('partials/footer') %>
+</body>
+</html>

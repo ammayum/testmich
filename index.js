@@ -4,13 +4,10 @@ const path = require("path");
 const session = require("express-session");
 const SiteContent = require('./models/SiteContent');
 const axios = require("axios");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-
-
-
-
+const MONGO_URI = "mongodb://localhost:27017/stmichael";
 
 // ========================
 // Middleware
@@ -21,22 +18,22 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-const membershipRoutes = require("./routes/membership");
-app.use("/membership", membershipRoutes);
+
+// ========================
+// Session
+// ========================
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "mysecret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // true only if using HTTPS
+    cookie: { secure: false }, // set to true if using HTTPS
   })
 );
 
 // ========================
 // MongoDB Connection
 // ========================
-const MONGO_URI = "mongodb://localhost:27017/stmichael";
-
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
@@ -45,20 +42,14 @@ mongoose
     process.exit(1);
   });
 
-
-
-
-
-
-// Function to get live or latest video
+// ========================
+// Function to get live/last YouTube video
+// ========================
 async function getCurrentVideoId() {
   try {
-   
-// --- Replace with your details ---
-const apiKey = "AIzaSyCyi3zDD2fUwsUbR4GGa_g8EIe5Vsqerug";   // from Google Cloud Console
-const channelId = "UC1dV2HFYpPpM3qeGs5RluYg";     // your channel ID
+    const apiKey = "AIzaSyCyi3zDD2fUwsUbR4GGa_g8EIe5Vsqerug";
+    const channelId = "UC1dV2HFYpPpM3qeGs5RluYg";
 
-    // 1️⃣ Check live videos first
     const liveUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&eventType=live&key=${apiKey}`;
     const liveResponse = await axios.get(liveUrl);
 
@@ -66,7 +57,6 @@ const channelId = "UC1dV2HFYpPpM3qeGs5RluYg";     // your channel ID
       return { videoId: liveResponse.data.items[0].id.videoId, isLive: true };
     }
 
-    // 2️⃣ Fallback to latest uploaded video
     const recentUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=1&key=${apiKey}`;
     const recentResponse = await axios.get(recentUrl);
 
@@ -81,44 +71,41 @@ const channelId = "UC1dV2HFYpPpM3qeGs5RluYg";     // your channel ID
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ========================
 // Routes
 // ========================
-const { router: adminRoutes, isAdmin } = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 const cmsRoutes = require("./routes/cms");
 const serviceRoutes = require("./routes/service");
+const membershipRoutes = require("./routes/membership");
 
-app.use("/admin", adminRoutes);          // Admin login/logout
-app.use("/cms", isAdmin, cmsRoutes);     // CMS dashboard (protected)
-app.use("/service", serviceRoutes);      // Service routes
-// --- New youtube ROUTE ---
+// Admin routes (login/logout/members)
+app.use("/admin", adminRoutes);
+
+// CMS routes (admin-only)
+const { requireAdminLogin } = require("./routes/admin");
+app.use("/admin/cms", requireAdminLogin, cmsRoutes);
+
+// Service routes
+app.use("/service", serviceRoutes);
+
+// Membership routes
+app.use("/membership", membershipRoutes);
+
+// YouTube Live
 app.get("/youtube-live", async (req, res) => {
-  const video = await getCurrentVideoId();  // Use the new function
+  const video = await getCurrentVideoId();
   res.render("youtube-live", { videoId: video.videoId, isLive: video.isLive });
 });
 
-// API endpoint for AJAX polling
+// YouTube AJAX check
 app.get("/youtube-live-check", async (req, res) => {
   const video = await getCurrentVideoId();
   res.json(video);
 });
 
-
 // ========================
-// Pages
+// Public pages
 // ========================
 app.get("/", async (req, res) => {
   const hero = await SiteContent.findOne({ section: 'hero' });
@@ -127,29 +114,25 @@ app.get("/", async (req, res) => {
   const live = await SiteContent.findOne({ section: 'live' });
 
   res.render("index", {
-    hero: hero ? hero.content : {},
-    services: services ? services.content : { items: [] },
-    donation: donation ? donation.content : {},
-    live: live ? live.content : {}
+    hero: hero?.content || {},
+    services: services?.content || { items: [] },
+    donation: donation?.content || {},
+    live: live?.content || {}
   });
 });
-
-
 
 app.get("/our-church", async (req, res) => {
   const section = await SiteContent.findOne({ section: 'about' });
   res.render("our-church", { 
     title: "Our Church",
-    aboutContent: section ? section.content : { title: 'Our Church', description: 'Welcome to our church!' }
+    aboutContent: section?.content || { title: 'Our Church', description: 'Welcome to our church!' }
   });
 });
-
 
 app.get("/donation", (req, res) => {
   res.render("donation", { title: "Donation", clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
-// Donation record POST
 app.post("/donation/record", (req, res) => {
   const { name, email, amount, transactionId } = req.body;
   console.log(`Donation received: ${name}, ${email}, £${amount}, TxnID: ${transactionId}`);

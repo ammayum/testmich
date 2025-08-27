@@ -3,11 +3,15 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const Admin = require('../models/admin');
 const Member = require("../models/Member");
-const { sendEmail, sendWhatsApp } = require("../utils/notifications"); // your existing email/whatsapp functions
+const { sendEmail, sendWhatsApp } = require("../utils/notifications");
 
-
-
-
+// ========================
+// Middleware: Protect admin routes
+// ========================
+const requireAdminLogin = (req, res, next) => {
+  if (req.session && req.session.admin) return next();
+  res.redirect('/admin/login');
+};
 
 // ========================
 // Admin login page
@@ -22,7 +26,6 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-
     if (!username || !password) {
       return res.render('admin/login', { error: 'Please enter username and password' });
     }
@@ -33,16 +36,14 @@ router.post('/login', async (req, res) => {
     const validPassword = await bcrypt.compare(password.trim(), admin.password);
     if (!validPassword) return res.render('admin/login', { error: 'Invalid password' });
 
-    // Set session
     req.session.admin = admin._id;
 
-    // Save session before redirecting
     req.session.save(err => {
       if (err) {
         console.error('Session save error:', err);
         return res.render('admin/login', { error: 'Session error. Try again.' });
       }
-      res.redirect('/admin/members'); // only send response here
+      res.redirect('/admin/cms'); // Redirect to CMS dashboard after login
     });
 
   } catch (err) {
@@ -52,7 +53,7 @@ router.post('/login', async (req, res) => {
 });
 
 // ========================
-// Logout route
+// Logout
 // ========================
 router.get('/logout', (req, res) => {
   req.session.destroy(err => {
@@ -62,45 +63,32 @@ router.get('/logout', (req, res) => {
 });
 
 // ========================
-// Middleware to protect CMS routes
+// Members page (admin only)
 // ========================
-const isAdmin = (req, res, next) => {
-  if (req.session && req.session.admin) return next();
-  res.redirect('/admin/login');
-};
-
-
-
-// ========================
-
-// View all members
-router.get("/members", isAdmin, async (req, res) => {
+router.get('/members', requireAdminLogin, async (req, res) => {
   const members = await Member.find().sort({ createdAt: -1 });
-  res.render("admin/members", { members });
+  res.render('admin/members', { members });
 });
 
-// Change member status
-router.post("/members/:id/status", isAdmin, async (req, res) => {
+// Change member status (admin only)
+router.post('/members/:id/status', requireAdminLogin, async (req, res) => {
   const { status } = req.body;
   const member = await Member.findByIdAndUpdate(req.params.id, { status }, { new: true });
 
-  // Notifications
-  if (status === "approved") {
-    sendEmail(member.email, "Membership Approved", `Hello ${member.name}, your membership is approved!`);
-    
-  } else if (status === "declined") {
-    sendEmail(member.email, "Membership Declined", `Hello ${member.name}, your membership was declined.`);
-    
+  // Send notifications
+  if (status === 'approved') {
+    sendEmail(member.email, 'Membership Approved', `Hello ${member.name}, your membership is approved!`);
+    // sendWhatsApp(member.phone, `Your membership is approved!`);
+  } else if (status === 'declined') {
+    sendEmail(member.email, 'Membership Declined', `Hello ${member.name}, your membership was declined.`);
+    // sendWhatsApp(member.phone, `Your membership was declined.`);
   }
 
-  res.redirect("/admin/members");
+  res.redirect('/admin/members');
 });
 
-
 // ========================
-// Export both separately
+// Export router
 // ========================
-module.exports = {
-  router,
-  isAdmin
-};
+module.exports = router;
+module.exports.requireAdminLogin = requireAdminLogin;

@@ -14,16 +14,26 @@
 <div class="container mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6">Edit Section: <%= section.section %></h1>
 
-  <form action="/cms/edit/<%= section.section %>" method="POST" class="bg-white p-6 rounded shadow">
-    <% for (let key in section.content) { %>
+  <form action="/admin/cms/edit/<%= section.section %>" method="POST" class="bg-white p-6 rounded shadow">
+    <% 
+      const contentKeys = Object.keys(section.content);
+      if (contentKeys.length === 0) { 
+    %>
       <div class="mb-4">
-        <label class="block text-gray-700 font-semibold mb-2"><%= key %></label>
-        <textarea name="<%= key %>" class="w-full border border-gray-300 p-2 rounded h-24"><%= section.content[key] %></textarea>
+        <label class="block text-gray-700 font-semibold mb-2">New Field</label>
+        <input type="text" name="newField" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter value">
       </div>
+    <% } else { %>
+      <% contentKeys.forEach(key => { %>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-semibold mb-2"><%= key %></label>
+          <textarea name="<%= key %>" class="w-full border border-gray-300 p-2 rounded h-24"><%= section.content[key] %></textarea>
+        </div>
+      <% }) %>
     <% } %>
 
     <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Save Changes</button>
-    <a href="/cms" class="ml-4 text-gray-700 hover:underline">Cancel</a>
+    <a href="/admin/cms" class="ml-4 text-gray-700 hover:underline">Cancel</a>
   </form>
 </div>
 

@@ -1,0 +1,40 @@
+<header class="bg-[#785b61] sticky top-0 z-50 shadow-md">
+  <div class="container mx-auto flex justify-between items-center p-4 text-white">
+    <a href="/" class="text-white text-2xl font-bold">Sheffield St. Michael Church</a>
+
+    <!-- Hamburger button (mobile only) -->
+    <button id="menu-btn" class="md:hidden text-gray-800 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <!-- Menu items (desktop) -->
+    <nav id="menu" class="hidden md:flex space-x-6 text-gray-700">
+
+      <a href="" class="text-white hover:text-[#ffd700] transition">Manage Reports</a>
+      <a href="" class="text-white hover:text-[#ffd700] transition">Content managament</a>
+      <a href="/admin/members" class="text-white hover:text-[#ffd700] transition">Member management</a>
+      <a href="/admin/login" class="text-white hover:text-[#ffd700] transition">Log out</a>
+    </nav>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
+    <a href="/" class="block px-4 py-2 hover:bg-gray-100">Home</a>
+    <a href="/our-church" class="block px-4 py-2 hover:bg-gray-100">Our Church</a>
+    <a href="/services" class="block px-4 py-2 hover:bg-gray-100">Services</a>
+    <a href="/donations" class="block px-4 py-2 hover:bg-gray-100">Donate</a>
+    <a href="/chat" class="block px-4 py-2 hover:bg-gray-100">Chat</a>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  btn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>

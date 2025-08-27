@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Live</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- HEADER -->
+  <%- include('partials/header') %>
+
+  <% if (videoId) { %>
+    <div class="relative w-screen h-screen">
+      <iframe 
+        class="absolute top-0 left-0 w-full h-full"
+        src="https://www.youtube.com/embed/<%= videoId %>?autoplay=1"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+      <div class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white px-4 py-1 rounded-md font-semibold z-10">
+        <%= isLive ? "✅ Live stream detected" : "ℹ️ Latest video displayed (not live)" %>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-1 rounded-md font-semibold">
+      ❌ No videos found
+    </div>
+  <% } %>
+
+  <script>
+    // Poll every 30s for new live video
+    setInterval(async () => {
+      try {
+        const res = await fetch("/youtube-live-check");
+        const data = await res.json();
+        const currentId = "<%= videoId %>";
+
+        if (data.videoId && data.videoId !== currentId) {
+          console.log("New video detected, reloading...");
+          location.reload();
+        }
+      } catch (err) {
+        console.error("Polling error:", err);
+      }
+    }, 30000);
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

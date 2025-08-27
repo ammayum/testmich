@@ -1,0 +1,27 @@
+Steps to fix Nodemailer with Gmail
+
+Enable 2FA (if not already)
+
+Go to Google Account → Security
+
+Turn on 2-Step Verification
+
+Create an App Password
+
+In the same Security page, find App Passwords
+
+Select:
+
+App: Mail
+
+Device: Other (give a name like “NodeMailer”)
+
+Copy the generated 16-character password
+
+Update .env or config
+
+EMAIL_USER=yourgmail@gmail.com
+EMAIL_PASS=your_app_password_here
+
+
+Use in your Nodemailer transport

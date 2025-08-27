@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Admin St. Michael Ethiopian Orthodox Tewahedo Church</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <%- include('./partials/header') %>
+
+<div class="container mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-4">Members</h2>
+  <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="px-4 py-2">Name</th>
+        <th class="px-4 py-2">Email</th>
+        <th class="px-4 py-2">Phone</th>
+        <th class="px-4 py-2">Message</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% members.forEach(member => { %>
+        <tr class="border-b">
+          <td class="px-4 py-2"><%= member.name %></td>
+          <td class="px-4 py-2"><%= member.email %></td>
+          <td class="px-4 py-2"><%= member.phone %></td>
+          <td class="px-4 py-2"><%= member.message %></td>
+          <td class="px-4 py-2">
+            <% if(member.status === 'approved') { %>
+              <span class="text-green-600 font-semibold"><%= member.status %></span>
+            <% } else if(member.status === 'declined') { %>
+              <span class="text-red-600 font-semibold"><%= member.status %></span>
+            <% } else { %>
+              <span class="text-yellow-600 font-semibold"><%= member.status %></span>
+            <% } %>
+          </td>
+          <td class="px-4 py-2 space-x-2">
+            <form action="/admin/members/<%= member._id %>/status" method="POST" class="inline">
+              <input type="hidden" name="status" value="approved">
+              <button class="px-2 py-1 bg-green-600 text-white rounded">Approve</button>
+            </form>
+            <form action="/admin/members/<%= member._id %>/status" method="POST" class="inline">
+              <input type="hidden" name="status" value="declined">
+              <button class="px-2 py-1 bg-red-600 text-white rounded">Decline</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('./partials/footer') %>

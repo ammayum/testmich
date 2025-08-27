@@ -1,0 +1,33 @@
+const express = require("express");
+const router = express.Router();
+const Member = require("../models/Member");
+const { sendEmail, sendWhatsApp } = require("../utils/notifications");
+
+// Public registration form
+router.get("/", (req, res) => {
+  res.render("membership", { successMsg: null });
+});
+
+// Handle registration submission
+router.post("/register", async (req, res) => {
+  const { name, email, phone, message } = req.body;
+
+  if (!name || !email || !phone) {
+    return res.render("membership", { successMsg: "Please fill all required fields." });
+  }
+
+  try {
+    const member = new Member({ name, email, phone, message });
+    await member.save();
+
+    // Notify admin (optional)
+    // sendEmail("admin@example.com", "New Membership Request", `${name} has registered.`);
+
+    res.render("membership", { successMsg: "Thank you! Your registration is submitted and pending approval." });
+  } catch (err) {
+    console.error(err);
+    res.render("membership", { successMsg: "Something went wrong. Please try again." });
+  }
+});
+
+module.exports = router;

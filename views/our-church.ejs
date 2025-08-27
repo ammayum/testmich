@@ -12,10 +12,12 @@
 <body class="bg-gray-100 font-sans">
 <%- include('partials/header') %>
 <div class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-4">Our Church</h1>
-  <p>Welcome to our church! [Add more content about the church here.]</p>
+  <h1 class="text-3xl font-bold mb-4"><%= aboutContent.title %></h1>
+  <p><%= aboutContent.description %></p>
 </div>
+
 <br><br><br><br><br><br><br><br><br><br><br><br>
 <%- include('partials/footer') %>
 </body>
 </html>
+

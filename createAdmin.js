@@ -1,25 +1,20 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
 const Admin = require('./models/admin');
 
+const MONGO_URI = 'mongodb://localhost:27017/stmichael';
+
 async function createAdmin() {
-  try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/stmichael', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+  await mongoose.connect(MONGO_URI);
 
-    const username = 'admin';
-    const password = '123456';
+  // Remove old admin if exists
+  await Admin.deleteMany({ username: 'admin' });
 
-    const admin = new Admin({ username, password });
-    await admin.save(); // password will be hashed automatically by the pre-save hook
+  // Create new admin with plain password (pre-save will hash it)
+  const admin = new Admin({ username: 'admin', password: 'admin123' });
+  await admin.save();
 
-    console.log('✅ Admin user created');
-    mongoose.connection.close();
-  } catch (err) {
-    console.error(err);
-  }
+  console.log('✅ Admin user created!');
+  mongoose.connection.close();
 }
 
-createAdmin();
+createAdmin().catch(console.error);

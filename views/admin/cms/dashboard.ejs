@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-100 font-sans">
+
+<%- include('../admin/partials/header') %>
+
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">CMS Dashboard</h1>
+
+  <div class="bg-white shadow rounded p-4">
+    <h2 class="text-xl font-semibold mb-4">Editable Sections</h2>
+
+    <table class="min-w-full border border-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-2 border">Section</th>
+          <th class="px-4 py-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% contents.forEach(content => { %>
+          <tr class="hover:bg-gray-100">
+            <td class="px-4 py-2 border"><%= content.section %></td>
+            <td class="px-4 py-2 border">
+              <a href="/cms/edit/<%= content.section %>" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+ 
+
+
+
+
+
+
+
+
+<%- include('../admin/partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Member Approvals</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <%- include('partials/header') %>
+
+  <section class="py-12 container mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-6 text-center">Pending Member Approvals</h2>
+
+    <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-2 px-4">Name</th>
+          <th class="py-2 px-4">Email</th>
+          <th class="py-2 px-4">Phone</th>
+          <th class="py-2 px-4">Status</th>
+          <th class="py-2 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% members.forEach(member => { %>
+          <tr class="border-t">
+            <td class="py-2 px-4"><%= member.name %></td>
+            <td class="py-2 px-4"><%= member.email %></td>
+            <td class="py-2 px-4"><%= member.phone %></td>
+            <td class="py-2 px-4"><%= member.status %></td>
+            <td class="py-2 px-4 flex space-x-2">
+              <% if (member.status === 'pending') { %>
+                <form method="POST" action="/admin/members/<%= member._id %>/approve">
+                  <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">Approve</button>
+                </form>
+                <form method="POST" action="/admin/members/<%= member._id %>/decline">
+                  <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Decline</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Section - <%= section.section %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-100 font-sans">
+
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Edit Section: <%= section.section %></h1>
+
+  <form action="/cms/edit/<%= section.section %>" method="POST" class="bg-white p-6 rounded shadow">
+    <% for (let key in section.content) { %>
+      <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2"><%= key %></label>
+        <textarea name="<%= key %>" class="w-full border border-gray-300 p-2 rounded h-24"><%= section.content[key] %></textarea>
+      </div>
+    <% } %>
+
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Save Changes</button>
+    <a href="/cms" class="ml-4 text-gray-700 hover:underline">Cancel</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
